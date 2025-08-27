@@ -1,8 +1,10 @@
-import { Button, Card, Container, Group, Image, Text,  } from '@mantine/core';
+import { Button, Card, Grid, Group, Image, Text, Modal } from '@mantine/core';
 import convetionImg from '../assets/images/conventiondummy.png';
 import { IconEye, IconLocationShare, IconWritingSign } from '@tabler/icons-react';
-
-
+import classes from './module/HomePage.module.css';
+import { useDisclosure } from '@mantine/hooks';
+import ConventionView from '../components/pdf/ConventionView';
+const pdfURL = 'pdf/sample.pdf';
 const conventionsData = [
   {
     id: 1,
@@ -40,10 +42,10 @@ const conventionsData = [
 ];
 
 export function HomePage() {
-
+    const [opened, { open, close }] = useDisclosure(false);
 
   const conventionCards = conventionsData.map((convention) => (
-    <Card shadow="sm" p="md" radius="md" withBorder key={convention.id}>
+    <Card shadow="sm" p="md" radius="md" m='xs' withBorder key={convention.id}>
       <Card.Section className={classes.cardSection}>
         <Image
           src={convetionImg}
@@ -56,7 +58,7 @@ export function HomePage() {
 
         <Text fw={400}>{convention.dateStart} - </Text><Text fw={400}>{convention.dateEnd}</Text>
 
-        <Button variant="light" color="blue" size="sm" radius="md" >
+        <Button variant="light" color="blue" size="sm" radius="md" onClick={open}>
           <IconEye size={18} stroke={1.5} />
         </Button>
       </Group>
@@ -73,8 +75,15 @@ export function HomePage() {
   ));
 
   return (
-     <Container size="lg" my={40}>
+    <>
+    <Modal opened={opened} onClose={close} title="Authentication" size="80%" styles={{ modal: { maxWidth: '900px' } }}>
+            <ConventionView/>
+      </Modal>
+     <Grid gutter="md">
         {conventionCards}
-     </Container>
+     </Grid>
+   
+      
+     </>
   );
 }

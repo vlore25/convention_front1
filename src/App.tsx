@@ -6,7 +6,8 @@ import { MantineProvider } from "@mantine/core";
 import { theme } from "./theme";
 
 // Importing routing components
-import { Route, Routes } from "react-router-dom";
+// CORRECTION: Importer depuis 'react-router-dom'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 // Importing the AuthProvider
@@ -22,6 +23,7 @@ export default function App() {
   return (
   <MantineProvider theme={theme}>
           <AuthProvider>
+            <BrowserRouter>
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
@@ -33,6 +35,7 @@ export default function App() {
                 </Route>
               </Route>
             </Routes>
+            </BrowserRouter>
           </AuthProvider>
   </MantineProvider>
   )

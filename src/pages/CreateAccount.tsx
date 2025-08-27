@@ -78,7 +78,7 @@ export function CreateAccount() {
 
     return (
         <Container size={420} my={20}>
-            <Title ta="center" className={classes.title}>
+            <Title ta="center">
                 Créer un nouveau utilisateur
             </Title>
             <Text ta="center" mt="xs">
