@@ -76,7 +76,7 @@ export function HomePage() {
 
   return (
     <>
-    <Modal opened={opened} onClose={close} title="Authentication" size="80%" styles={{ modal: { maxWidth: '900px' } }}>
+    <Modal opened={opened} onClose={close} title="Convention de stage" size="80%" styles={{ modal: { maxWidth: '900px' } }}>
             <ConventionView/>
       </Modal>
      <Grid gutter="md">

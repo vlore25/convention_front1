@@ -25,8 +25,14 @@ export default function ConventionView() {
                         format: "https://pspdfkit.com/instant-json/v1",
                         formFieldValues: [
                             {
-                                name: "Form Field 1",
-                                value: "Text for form field 1",
+                                name: "internname",
+                                value: "LORE PACHECO Victor",
+                                type: "pspdfkit/form-field-value",
+                                v: 1
+                            },
+                            {
+                                name: "formationname",
+                                value: "Developpeur web et web mobile",
                                 type: "pspdfkit/form-field-value",
                                 v: 1
                             }
