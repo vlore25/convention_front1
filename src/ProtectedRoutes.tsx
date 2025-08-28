@@ -32,7 +32,6 @@ const ProtectedRoutes: React.FC = () => {
                     navigate('/login', { replace: true });
                 }
             } else {
-                // Si aucun token n'existe, on redirige directement.
                 navigate('/login', { replace: true });
             }
         };

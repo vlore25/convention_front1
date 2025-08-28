@@ -19,7 +19,7 @@ import axios from 'axios';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
-export function CreateAccount() {
+export function CreateAccountPage() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const form = useForm({
@@ -29,15 +29,18 @@ export function CreateAccount() {
             last_name: '',
             email: '',
             plainPassword: '',
-            telephone: '', 
+            telephone: '',
             matricule: '',
-            formation_id: '', 
+            formation_id: '',
+            "roles": [
+                "ROLE_STUDENT"
+            ]
         },
         validate: {
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
         },
     });
-    
+
     const handleFormSubmit = (values) => {
         setLoading(true);
         console.log("Submitting raw values:", values);
@@ -53,27 +56,27 @@ export function CreateAccount() {
                 'Content-Type': 'application/ld+json'
             }
         })
-        .then(function (response) {
-            console.log("Success:", response);
-            notifications.show({
-                title: 'Compte créé !',
-                message: `L'utilisateur ${values.firstname} a été créé avec succès.`,
-                color: 'green',
+            .then(function (response) {
+                console.log("Success:", response);
+                notifications.show({
+                    title: 'Compte créé !',
+                    message: `L'utilisateur ${values.firstname} a été créé avec succès.`,
+                    color: 'green',
+                });
+                form.reset();
+                setTimeout(() => navigate('/login'), 2000);
+            })
+            .catch(function (error) {
+                console.error("Error:", error.response ? error.response.data : error.message);
+                notifications.show({
+                    title: 'Erreur',
+                    message: 'Une erreur est survenue lors de la création du compte.',
+                    color: 'red',
+                });
+            })
+            .finally(() => {
+                setLoading(false);
             });
-            form.reset();
-            setTimeout(() => navigate('/login'), 2000);
-        })
-        .catch(function (error) {
-            console.error("Error:", error.response ? error.response.data : error.message);
-            notifications.show({
-                title: 'Erreur',
-                message: 'Une erreur est survenue lors de la création du compte.',
-                color: 'red',
-            });
-        })
-        .finally(() => {
-            setLoading(false);
-        });
     };
 
     return (
@@ -111,7 +114,7 @@ export function CreateAccount() {
                             />
                         </GridCol>
                     </Grid>
-                    
+
                     <FormationCombox
                         value={form.values.formation}
                         onChange={(value) => form.setFieldValue('formation', value || '')}

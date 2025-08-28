@@ -16,6 +16,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useForm } from '@mantine/form';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthProvider';
+
 
 export function Login() {
     const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ export function Login() {
 
     useEffect(() => {
         if (localStorage.getItem('userToken')) {
-            navigate('/home');
+            navigate('/student');
         }
     }, [navigate]);
 
@@ -57,13 +59,13 @@ export function Login() {
 
                 if (token) {
                     localStorage.setItem('jwt_token', token);
-                    navigate('/home');
                 } else {
                     console.log("Aucun token reçu, veuillez réessayer.");
                 }
             })
             .catch(function (error) {
                 console.error("Error:", error.response ? error.response.data : error.message);
+
             })
             .finally(() => {
                 setLoading(false);

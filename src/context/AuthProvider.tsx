@@ -2,11 +2,9 @@
 import { createContext, useState, useEffect, useContext, useMemo } from 'react';
 import axios from 'axios';
 
-// 1. Create the Context
 
 const AuthContext = createContext(null);
 
-// 2. Create the AuthProvider Component
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,7 +12,6 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      // Get the token from localStorage
       const token = localStorage.getItem('userToken');
 
       if (!token) {
@@ -27,31 +24,30 @@ export function AuthProvider({ children }) {
         const response = await axios.get('http://127.0.0.1:8000/api/me', {
           headers: {
             'Content-Type': 'application/json',
-            // Correct template literal syntax
-            'Authorization': 'Bearer '+ token,
+            'Authorization': 'Bearer ' + token,
           },
         });
 
         setUser(response.data);
       } catch (err) {
-        // Handle errors, e.g., token expired
+
         console.error("Failed to fetch user:", err);
         setError(err.message);
-        localStorage.removeItem('userToken'); // Clean up bad token
+        localStorage.removeItem('userToken');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchUser();
-  }, []); 
+  }, []);
 
   const value = useMemo(() => ({
     user,
     isLoading,
     error,
   }), [user, isLoading, error]);
-
+  console.log(user);
   return (
     <AuthContext.Provider value={value}>
       {!isLoading && children}

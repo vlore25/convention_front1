@@ -16,8 +16,8 @@ import { AuthProvider } from "./context/AuthProvider";
 // Importing the pages
 import { AppLayout } from "./AppLayout";
 import { Login } from "./pages/Login";
-import { CreateAccount } from "./pages/CreateAccount";
-import { HomePage } from "./pages/HomePage";
+import { CreateAccountPage } from "./pages/CreateAccountPage";
+import { StudentHomePage } from "./pages/StudentHomePage";
 
 export default function App() {
   return (
@@ -27,11 +27,10 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/create-account" element={<CreateAccount />} />
-
+              <Route path="/create-account" element={<CreateAccountPage />} />
               <Route element={<ProtectedRoutes />}>
                 <Route element={<AppLayout />}>
-                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/student" element={<StudentHomePage />} />
                 </Route>
               </Route>
             </Routes>

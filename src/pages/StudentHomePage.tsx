@@ -4,7 +4,10 @@ import { IconEye, IconLocationShare, IconWritingSign } from '@tabler/icons-react
 import classes from './module/HomePage.module.css';
 import { useDisclosure } from '@mantine/hooks';
 import ConventionView from '../components/pdf/ConventionView';
-const pdfURL = 'pdf/sample.pdf';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+
 const conventionsData = [
   {
     id: 1,
@@ -41,8 +44,30 @@ const conventionsData = [
   }
 ];
 
-export function HomePage() {
-    const [opened, { open, close }] = useDisclosure(false);
+export function StudentHomePage() {
+  const [opened, { open, close }] = useDisclosure(false);
+  const [conventionsDataState, setConventionsDataState] = useState(null);
+
+  useEffect(() => {
+      const token = localStorage.getItem('userToken');
+      const fetchConventions = async () => {
+      try {
+        const response = await axios.get('http://http://127.0.0.1:8000/api/me/conventions', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+        setConventionsDataState(response.data);
+      } catch (err) {
+        console.error("Failed to fetch convention data:", err);
+      } finally {
+      }
+    };
+    fetchConventions();
+  }, []);
+
+  const [selectedConvention, setSelectedConvention] = useState(null);
 
   const conventionCards = conventionsData.map((convention) => (
     <Card shadow="sm" p="md" radius="md" m='xs' withBorder key={convention.id}>
@@ -58,7 +83,16 @@ export function HomePage() {
 
         <Text fw={400}>{convention.dateStart} - </Text><Text fw={400}>{convention.dateEnd}</Text>
 
-        <Button variant="light" color="blue" size="sm" radius="md" onClick={open}>
+        <Button
+          variant="light"
+          color="blue"
+          size="sm"
+          radius="md"
+          onClick={() => {
+            setSelectedConvention(convention);
+            open();                          
+          }}
+        >
           <IconEye size={18} stroke={1.5} />
         </Button>
       </Group>
@@ -76,14 +110,14 @@ export function HomePage() {
 
   return (
     <>
-    <Modal opened={opened} onClose={close} title="Convention de stage" size="80%" styles={{ modal: { maxWidth: '900px' } }}>
-            <ConventionView/>
+      <Modal opened={opened} onClose={close} title="Convention de stage" size="80%" styles={{ modal: { maxWidth: '900px' } }}>
+        {selectedConvention && <ConventionView convention={selectedConvention} />}
       </Modal>
-     <Grid gutter="md">
+      <Grid gutter="md">
         {conventionCards}
-     </Grid>
-   
-      
-     </>
+      </Grid>
+
+
+    </>
   );
 }

@@ -1,6 +1,15 @@
 import { useEffect, useRef } from "react";
 
-export default function ConventionView() {
+function getDate() {
+  const today = new Date();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const day = today.getDate();
+  return `${day}/${month}/${year}`;
+}
+
+export default function ConventionView(props) {
+    console.log("Convention data:", props.convention.dateStart);
     const containerRef = useRef(null);
     const documentUrl = '/pdf/sample.pdf';
 
@@ -25,6 +34,12 @@ export default function ConventionView() {
                         format: "https://pspdfkit.com/instant-json/v1",
                         formFieldValues: [
                             {
+                                name: "datedocument_es_:date",
+                                value: getDate(),
+                                type: "pspdfkit/form-field-value",
+                                v: 1
+                            },
+                            {
                                 name: "internname",
                                 value: "LORE PACHECO Victor",
                                 type: "pspdfkit/form-field-value",
@@ -35,7 +50,19 @@ export default function ConventionView() {
                                 value: "Developpeur web et web mobile",
                                 type: "pspdfkit/form-field-value",
                                 v: 1
-                            }
+                            },
+                            {
+                                name: "datestart_es_:date",
+                                value: props.convention.dateStart,
+                                type: "pspdfkit/form-field-value",
+                                v: 1
+                            },
+                            {
+                                name: "dateend_es_:date",
+                                value: props.convention.dateEnd,
+                                type: "pspdfkit/form-field-value",
+                                v: 1
+                            },
                         ]
                     }
                 });
