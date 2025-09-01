@@ -23,12 +23,6 @@ export function Login() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (localStorage.getItem('userToken')) {
-            navigate('/student');
-        }
-    }, [navigate]);
-
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -54,6 +48,7 @@ export function Login() {
         })
             .then(function (response) {
                 console.log("Connexion réussie:", response.data);
+                navigate('/student');
                 const token = response.data.token;
                 localStorage.setItem('userToken', token);
 

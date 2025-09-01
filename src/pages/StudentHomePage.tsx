@@ -7,57 +7,26 @@ import ConventionView from '../components/pdf/ConventionView';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-
-const conventionsData = [
-  {
-    id: 1,
-    studentId: 3,
-    commanderId: 5,
-    afpaDirectorId: 7,
-    formationId: 2,
-    societyId: 4,
-    dateStart: '2023-10-01',
-    dateEnd: '2023-12-31',
-    pdfUrl: '/pdf/sample.pdf',
-  },
-  {
-    id: 2,
-    studentId: 8,
-    commanderId: 6,
-    afpaDirectorId: 9,
-    formationId: 1,
-    societyId: 3,
-    dateStart: '2023-11-15',
-    dateEnd: '2024-02-15',
-    pdfUrl: '/pdf/sample.pdf',
-  },
-  {
-    id: 3,
-    studentId: 10,
-    commanderId: 11,
-    afpaDirectorId: 12,
-    formationId: 3,
-    societyId: 1,
-    dateStart: '2024-01-10',
-    dateEnd: '2024-04-10',
-    pdfUrl: '/pdf/sample.pdf',
-  }
-];
-
+// Utility function to format date strings
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('fr-FR');
+}
 export function StudentHomePage() {
   const [opened, { open, close }] = useDisclosure(false);
-  const [conventionsDataState, setConventionsDataState] = useState(null);
+  const [conventionsDataState, setConventionsDataState] = useState([]);
 
   useEffect(() => {
       const token = localStorage.getItem('userToken');
+      console.log("Fetching conventions with token:", token);
       const fetchConventions = async () => {
       try {
-        const response = await axios.get('http://http://127.0.0.1:8000/api/me/conventions', {
+        const response = await axios.get('http://127.0.0.1:8000/api/me/conventions', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token,
           },
         });
+        console.log("Fetched conventions data:", response.data);
         setConventionsDataState(response.data);
       } catch (err) {
         console.error("Failed to fetch convention data:", err);
@@ -68,8 +37,8 @@ export function StudentHomePage() {
   }, []);
 
   const [selectedConvention, setSelectedConvention] = useState(null);
-
-  const conventionCards = conventionsData.map((convention) => (
+  
+  const conventionCards = conventionsDataState.map((convention) => (
     <Card shadow="sm" p="md" radius="md" m='xs' withBorder key={convention.id}>
       <Card.Section className={classes.cardSection}>
         <Image
@@ -81,7 +50,7 @@ export function StudentHomePage() {
       <Group justify="space-between" mt="md" mb="xs">
         <Text fw={400}>Convention du: </Text>
 
-        <Text fw={400}>{convention.dateStart} - </Text><Text fw={400}>{convention.dateEnd}</Text>
+        <Text fw={400}>{formatDate(convention.dateStart)} - </Text><Text fw={400}>{formatDate(convention.dateEnd)}</Text>
 
         <Button
           variant="light"

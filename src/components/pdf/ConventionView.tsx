@@ -1,15 +1,18 @@
 import { useEffect, useRef } from "react";
 
 function getDate() {
-  const today = new Date();
-  const month = today.getMonth() + 1;
-  const year = today.getFullYear();
-  const day = today.getDate();
-  return `${day}/${month}/${year}`;
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const day = today.getDate();
+    return `${day}/${month}/${year}`;
 }
-
+// Utility function to format date strings
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('fr-FR');
+}
 export default function ConventionView(props) {
-    console.log("Convention data:", props.convention.dateStart);
+    
     const containerRef = useRef(null);
     const documentUrl = '/pdf/sample.pdf';
 
@@ -20,12 +23,16 @@ export default function ConventionView(props) {
         (async () => {
             const NutrientViewer = (await import("@nutrient-sdk/viewer")).default;
 
-
             NutrientViewer.unload(container);
 
             if (container && NutrientViewer) {
-                NutrientViewer.load({
 
+                NutrientViewer.load({
+                    toolbarItems: [{ type: "export-pdf" }],
+                    //Disable editing for all anotation, view only
+                    isEditableAnnotation: function (ann) {
+                        return !(ann instanceof NutrientViewer.Annotations.WidgetAnnotation);
+                    },
                     container,
                     document: documentUrl,
                     baseUrl: `${window.location.protocol}//${window.location.host}/${import.meta.env.PUBLIC_URL ?? ""
@@ -41,31 +48,32 @@ export default function ConventionView(props) {
                             },
                             {
                                 name: "internname",
-                                value: "LORE PACHECO Victor",
+                                value: props.convention.student.firstName + " " + props.convention.student.lastName,
                                 type: "pspdfkit/form-field-value",
                                 v: 1
                             },
                             {
                                 name: "formationname",
-                                value: "Developpeur web et web mobile",
+                                value: props.convention.formation.name,
                                 type: "pspdfkit/form-field-value",
                                 v: 1
                             },
                             {
                                 name: "datestart_es_:date",
-                                value: props.convention.dateStart,
+                                value: formatDate(props.convention.dateStart),
                                 type: "pspdfkit/form-field-value",
                                 v: 1
                             },
                             {
                                 name: "dateend_es_:date",
-                                value: props.convention.dateEnd,
+                                value: formatDate(props.convention.dateEnd),
                                 type: "pspdfkit/form-field-value",
                                 v: 1
                             },
                         ]
                     }
                 });
+
             }
 
             cleanup = () => {

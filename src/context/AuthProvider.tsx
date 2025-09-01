@@ -10,10 +10,12 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem('userToken');
 
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('userToken');
+    const fetchUser = async () => {
       if (!token) {
         setUser(null);
         setIsLoading(false);
@@ -47,7 +49,6 @@ export function AuthProvider({ children }) {
     isLoading,
     error,
   }), [user, isLoading, error]);
-  console.log(user);
   return (
     <AuthContext.Provider value={value}>
       {!isLoading && children}
