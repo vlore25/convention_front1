@@ -10,9 +10,6 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
-
-
   useEffect(() => {
     const token = localStorage.getItem('userToken');
     const fetchUser = async () => {
@@ -21,7 +18,6 @@ export function AuthProvider({ children }) {
         setIsLoading(false);
         return;
       }
-
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/me', {
           headers: {
@@ -29,10 +25,8 @@ export function AuthProvider({ children }) {
             'Authorization': 'Bearer ' + token,
           },
         });
-
         setUser(response.data);
       } catch (err) {
-
         console.error("Failed to fetch user:", err);
         setError(err.message);
         localStorage.removeItem('userToken');

@@ -36,6 +36,7 @@ export function Login() {
 
     const handleFormSubmit = (values) => {
         setLoading(true);
+
         console.log("Submitting raw values:", values);
         const userPayload = {
             ...values,

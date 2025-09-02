@@ -19,6 +19,13 @@ import { Login } from "./pages/Login";
 import { CreateAccountPage } from "./pages/CreateAccountPage";
 import { StudentHomePage } from "./pages/StudentHomePage";
 
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.mjs',
+  import.meta.url,
+).toString();
+
 export default function App() {
   return (
   <MantineProvider theme={theme}>

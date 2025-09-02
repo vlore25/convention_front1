@@ -1,4 +1,8 @@
-import { useEffect, useRef } from "react";
+import WebViewer from '@pdftron/webviewer';
+import { formToJSON } from 'axios';
+import { useEffect, useRef } from 'react';
+
+const element = document.getElementById('viewer');
 
 function getDate() {
     const today = new Date();
@@ -11,80 +15,52 @@ function getDate() {
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('fr-FR');
 }
+
 export default function ConventionView(props) {
-    
-    const containerRef = useRef(null);
-    const documentUrl = '/pdf/sample.pdf';
+    const viewer = useRef(null);
+    const hasMounted = useRef(false);
+
+    const fieldsToUpdate = {
+        "conventiondate_es_:date": "25/12/1996",
+        "internname": props.convention.fisrtName,
+    }
 
     useEffect(() => {
-        const container = containerRef.current;
-        let cleanup = () => { };
 
-        (async () => {
-            const NutrientViewer = (await import("@nutrient-sdk/viewer")).default;
+        if (hasMounted.current) {
+            return;
+        }
+        hasMounted.current = true;
 
-            NutrientViewer.unload(container);
+        WebViewer(
+            {
+                path: '/lib/webviewer',
+                licenseKey: 'demo:1756816985517:6075bde403000000004a992349196496df43d3039b525daf60fb2e124a',
+                initialDoc: './pdf/sample.pdf',
+            },
+            viewer.current,
+        ).then((instance) => {
+            const { documentViewer, annotationManager} = instance.Core;
+            instance.UI.disableElements(['default-top-header']);
 
-            if (container && NutrientViewer) {
+            documentViewer.addEventListener('annotationsLoaded', () => {
 
-                NutrientViewer.load({
-                    toolbarItems: [{ type: "export-pdf" }],
-                    //Disable editing for all anotation, view only
-                    isEditableAnnotation: function (ann) {
-                        return !(ann instanceof NutrientViewer.Annotations.WidgetAnnotation);
-                    },
-                    container,
-                    document: documentUrl,
-                    baseUrl: `${window.location.protocol}//${window.location.host}/${import.meta.env.PUBLIC_URL ?? ""
-                        }`,
-                    instantJSON: {
-                        format: "https://pspdfkit.com/instant-json/v1",
-                        formFieldValues: [
-                            {
-                                name: "datedocument_es_:date",
-                                value: getDate(),
-                                type: "pspdfkit/form-field-value",
-                                v: 1
-                            },
-                            {
-                                name: "internname",
-                                value: props.convention.student.firstName + " " + props.convention.student.lastName,
-                                type: "pspdfkit/form-field-value",
-                                v: 1
-                            },
-                            {
-                                name: "formationname",
-                                value: props.convention.formation.name,
-                                type: "pspdfkit/form-field-value",
-                                v: 1
-                            },
-                            {
-                                name: "datestart_es_:date",
-                                value: formatDate(props.convention.dateStart),
-                                type: "pspdfkit/form-field-value",
-                                v: 1
-                            },
-                            {
-                                name: "dateend_es_:date",
-                                value: formatDate(props.convention.dateEnd),
-                                type: "pspdfkit/form-field-value",
-                                v: 1
-                            },
-                        ]
-                    }
-                });
+                const fieldManager = annotationManager.getFieldManager();
+                console.log(props);
+                console.log(fieldManager);
+                
+                Object.entries(fieldsToUpdate).forEach(([fieldName]))
+                const field = fieldManager.getField(fieldName);
+                if (field) {
+                    field.setValue('Victor');
+                }
+            });
+        });
+    }, []);
 
-            }
-
-            cleanup = () => {
-                NutrientViewer.unload(container);
-            };
-        })();
-
-        return cleanup;
-    }, [documentUrl]);
-
-    return <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '70vh' }} />;
+    return (
+        <div className="webviewer" ref={viewer} style={{ height: "100vh" }}></div>
+    );
 }
 
 
