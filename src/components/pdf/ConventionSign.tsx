@@ -1,5 +1,4 @@
 import WebViewer from '@pdftron/webviewer';
-import { formToJSON } from 'axios';
 import { useEffect, useRef } from 'react';
 
 const element = document.getElementById('viewer');
@@ -12,11 +11,12 @@ function getDate() {
     return `${day}/${month}/${year}`;
 }
 // Utility function to format date strings
-function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('fr-FR');
+
+function formatDate(dateString : Number) {
+    return new Date(Number (dateString)).toLocaleDateString('fr-FR');
 }
 
-export default function ConventionView(props) {
+export default function ConventionSign(props) {
     const viewer = useRef(null);
     const hasMounted = useRef(false);
 
@@ -27,7 +27,7 @@ export default function ConventionView(props) {
         'datestart_es_:date': formatDate(props.convention.dateStart),
         'dateend_es_:date': formatDate(props.convention.dateEnd),
     }
-    
+
     useEffect(() => {
         if (hasMounted.current) {
             return;
@@ -43,19 +43,27 @@ export default function ConventionView(props) {
             viewer.current,
         ).then((instance) => {
 
-            const { documentViewer, annotationManager } = instance.Core;
+            const { documentViewer, annotationManager, Annotations } = instance.Core;
+
             instance.UI.disableElements(['default-top-header']);
             //Prefill each form champ with convention and student data
             documentViewer.addEventListener('annotationsLoaded', async () => {
                 const fieldManager = annotationManager.getFieldManager();
-                console.log(fieldManager);
                 Object.entries(fieldsToUpdate).forEach(([fieldName, value]) => {
                     const field = fieldManager.getField(fieldName);
                     if (field) {
                         field.setValue(value);
                     }
                 });
+
+                const textField = fieldManager.getField('sign1_es_:signer:signature');
+                if (textField) {
+                    annotationManager.drawAnnotations(textField.PageNumber);
+                }
+
             });
+
+
         });
     }, []);
 

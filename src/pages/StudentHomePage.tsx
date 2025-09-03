@@ -6,19 +6,21 @@ import { useDisclosure } from '@mantine/hooks';
 import ConventionView from '../components/pdf/ConventionView';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import ModalPdfView from '../components/ModalPdfView';
 
 // Utility function to format date strings
-function formatDate(dateString) {
+function formatDate(dateString: Date) {
   return new Date(dateString).toLocaleDateString('fr-FR');
 }
 export function StudentHomePage() {
   const [opened, { open, close }] = useDisclosure(false);
   const [conventionsDataState, setConventionsDataState] = useState([]);
+  const [pdfAction, setPdfAction] = useState('');
 
   useEffect(() => {
-      const token = localStorage.getItem('userToken');
-      console.log("Fetching conventions with token:", token);
-      const fetchConventions = async () => {
+    const token = localStorage.getItem('userToken');
+    console.log("Fetching conventions with token:", token);
+    const fetchConventions = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/me/conventions', {
           headers: {
@@ -37,7 +39,7 @@ export function StudentHomePage() {
   }, []);
 
   const [selectedConvention, setSelectedConvention] = useState(null);
-  
+
   const conventionCards = conventionsDataState.map((convention) => (
     <Card shadow="sm" p="md" radius="md" m='xs' withBorder key={convention.id}>
       <Card.Section className={classes.cardSection}>
@@ -47,11 +49,10 @@ export function StudentHomePage() {
           alt="Convention image"
         />
       </Card.Section>
+
       <Group justify="space-between" mt="md" mb="xs">
-        <Text fw={400}>Convention du: </Text>
-
-        <Text fw={400}>{formatDate(convention.dateStart)} - </Text><Text fw={400}>{formatDate(convention.dateEnd)}</Text>
-
+        <Text fw={400}>Convention du: {formatDate(convention.dateStart) + ' - ' + formatDate(convention.dateEnd)}
+        </Text>
         <Button
           variant="light"
           color="blue"
@@ -59,7 +60,8 @@ export function StudentHomePage() {
           radius="md"
           onClick={() => {
             setSelectedConvention(convention);
-            open();                          
+            open();
+            setPdfAction('view');
           }}
         >
           <IconEye size={18} stroke={1.5} />
@@ -71,6 +73,11 @@ export function StudentHomePage() {
         color="#86bc24"
         fullWidth mt="md"
         radius="md"
+        onClick={() => {
+            setSelectedConvention(convention);
+            open();
+            setPdfAction('sign');
+          }}
       >
         Signer et envoyer
       </Button>
@@ -79,9 +86,12 @@ export function StudentHomePage() {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="Convention de stage" size="80%" styles={{ modal: { maxWidth: '900px' } }}>
-        {selectedConvention && <ConventionView convention={selectedConvention} />}
-      </Modal>
+      <ModalPdfView
+        opened={opened}
+        onClose={close}
+        selectedConvention={selectedConvention}
+        selectedAction={pdfAction}
+      />
       <Grid gutter="md">
         {conventionCards}
       </Grid>
