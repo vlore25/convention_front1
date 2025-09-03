@@ -1,4 +1,3 @@
-import { DocusealForm } from '@docuseal/react'
 import { Button, Card, Grid, Group, Image, Text, Modal } from '@mantine/core';
 import convetionImg from '../assets/images/conventiondummy.png';
 import { IconEye, IconLocationShare, IconWritingSign } from '@tabler/icons-react';

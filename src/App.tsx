@@ -28,21 +28,21 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 export default function App() {
   return (
-  <MantineProvider theme={theme}>
-          <AuthProvider>
-            <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/create-account" element={<CreateAccountPage />} />
-              <Route element={<ProtectedRoutes />}>
-                <Route element={<AppLayout />}>
-                  <Route path="/student" element={<StudentHomePage />} />
-                </Route>
+    <MantineProvider theme={theme}>
+      <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/create-account" element={<CreateAccountPage />} />          
+          <Route element={<ProtectedRoutes />}>            
+              <Route element={<AppLayout />}>
+                <Route path="/student" element={<StudentHomePage />} />
               </Route>
-            </Routes>
-            </BrowserRouter>
-          </AuthProvider>
-  </MantineProvider>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+    </MantineProvider>
   )
 }

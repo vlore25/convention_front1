@@ -21,8 +21,10 @@ export default function ConventionView(props) {
     const hasMounted = useRef(false);
 
     const fieldsToUpdate = {
-        "conventiondate_es_:date": "25/12/1996",
-        "internname": props.convention.fisrtName,
+        'conventiondate_es_:date': "25/12/1996",
+        'internname': '',
+        'formationname': '',
+        
     }
 
     useEffect(() => {
